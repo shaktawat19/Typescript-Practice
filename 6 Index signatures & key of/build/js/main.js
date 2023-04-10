@@ -1,89 +1,50 @@
 "use strict";
-class Coder {
-    constructor(name, music, lang, age) {
-        this.name = name;
-        this.lang = lang;
-        this.music = music;
-        this.age = age;
+// Index Signatures: Generally used for accessing objct's data dynamically.
+// interface TransactionObj {
+//   Pizza: number,
+//   Books: number,
+//   Job: number
+// }
+const todaysTransactions = {
+    Pizza: -10,
+    Books: -5,
+    Job: 50
+};
+console.log(todaysTransactions.Pizza);
+console.log(todaysTransactions['Pizza']); // working fine bcz of line-4
+let prop = 'Pizza';
+console.log(todaysTransactions[prop]); // working fine bcz of line-4
+const todaysNet = (transactions) => {
+    let total = 0;
+    for (const transaction in transactions) {
+        total += transactions[transaction]; // working fine bcz of line-4
     }
+    return total;
+};
+console.log(todaysNet(todaysTransactions));
+const student = {
+    name: "Harsh",
+    GPA: 9.8,
+    classes: [100, 200]
+};
+console.log(student.age); // it doesnt exist in student obj but still ts has no problem bcz of idx signature we hv done in line-41
+//
+for (const key in student) {
+    console.log(`${key}: ${student[key]}`); // working fine bcz of line-41
+    // alternative, if we remove line-41 then:
+    // console.log(`${key}: ${student[key as keyof Student]}`);
 }
-// By default the visibility modifier is 'public', still we can explicitly write n it will also reduce our code as done below:
-class Coder2 {
-    constructor(name, music, age, lang = "Typescript" // given a default value it. Moreover, default should shld always be at last.
-    ) {
-        this.name = name;
-        this.music = music;
-        this.age = age;
-        this.lang = lang;
-        this.name = name;
-        this.lang = lang;
-        this.music = music;
-        this.age = age;
-    }
-    getAge() {
-        return `my age is ${this.age}`;
-    }
+//
+const logStudentKey = (student, key) => {
+    console.log(`Student ${key}: ${student[key]}`);
+};
+const monthlyIncomes = {
+    salary: 500000000,
+    bonus: 100,
+    sidehustle: 250
+};
+for (const revenue in monthlyIncomes) {
+    console.log(monthlyIncomes[revenue]);
+    // Solution: keyof assertion
+    console.log(monthlyIncomes[revenue]);
 }
-const Harsh = new Coder2("Harsh", "Rock", 25);
-console.log(Harsh.getAge());
-class WebDev extends Coder2 {
-    constructor(computer, name, age, music) {
-        super(name, music, age);
-        this.computer = computer;
-        this.computer = computer;
-    }
-    getLang() {
-        return `i write in ${this.lang} too`; // we can access the protected lang here bcz WebDev is subclass of Coder2
-    }
-}
-const obj = new WebDev('Mac', 'Harsh', 25, 'Lofi');
-console.log(obj.getLang());
-console.log(obj.age);
-console.log(obj.lang);
-class Guitarist {
-    constructor(name, instrument) {
-        this.name = name;
-        this.instrument = instrument;
-    }
-    play(action) {
-        return `${this.name} ${action} the ${this.instrument}`;
-    }
-}
-const obj1 = new Guitarist('Harsh', 'guitar');
-console.log(obj1.play('strums'));
-///////////////////////////////////////////////////////
-class Peeps {
-    static getCount() {
-        return Peeps.count;
-    }
-    constructor(name) {
-        this.name = name;
-        this.name = name;
-        this.id = ++Peeps.count;
-    }
-}
-Peeps.count = 0;
-const Harshh = new Peeps('Harsh');
-const Steve = new Peeps('Steve');
-const Amy = new Peeps('Amy');
-console.log(Peeps.count);
-///////////////////////////////////////
-class Bands {
-    constructor() {
-        this.dataState = [];
-    }
-    get data() {
-        return this.dataState;
-    }
-    set data(value) {
-        if (Array.isArray(value) && value.every(elem => typeof elem === 'string')) {
-            this.dataState = value;
-            return;
-        }
-        else
-            throw new Error('Param is not an array of strings');
-    }
-}
-const MyBands = new Bands();
-MyBands.data = ["dfg", 'fg', "Er"];
-console.log(MyBands.data);

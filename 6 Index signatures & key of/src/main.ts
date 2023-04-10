@@ -1,124 +1,84 @@
-class Coder {
-  name: string;
-  music: string;
-  age: number;
-  lang: string;
+// Index Signatures: Generally used for accessing objct's data dynamically.
 
-  constructor(name: string, music: string, lang: string, age: number) {
-    this.name = name;
-    this.lang = lang;
-    this.music = music;
-    this.age = age;
-  }
+interface TransactionObj {
+ readonly [index: string]: number, // states that all keys will be string n values will b number
 }
 
-// By default the visibility modifier is 'public', still we can explicitly write n it will also reduce our code as done below:
-class Coder2 {
-  secondLang!: string; // It means we know what we are doing n we r nt goin to intialize it anyway.
-
-  constructor(
-    public readonly name: string,
-    public music: string,
-    private age: number,
-    protected lang: string = "Typescript" // given a default value it. Moreover, default should shld always be at last.
-  ) {
-    this.name = name;
-    this.lang = lang;
-    this.music = music;
-    this.age = age;
-  }
-
-  public getAge() {
-    return `my age is ${this.age}`;
-  }
+// interface TransactionObj {
+//   Pizza: number,
+//   Books: number,
+//   Job: number
+// }
+const todaysTransactions: TransactionObj = {
+  Pizza: -10,
+  Books: -5,
+  Job: 50
 }
-const Harsh = new Coder2("Harsh", "Rock", 25);
-console.log(Harsh.getAge());
+console.log(todaysTransactions.Pizza);
+console.log(todaysTransactions['Pizza']); // working fine bcz of line-4
 
+let prop: string = 'Pizza';
+console.log(todaysTransactions[prop]);  // working fine bcz of line-4
 
-class WebDev extends Coder2 {
-  constructor(
-    public computer: string,
-    name: string,
-    age: number,
-    music: string
-  ) {
-    super(name, music, age);
-    this.computer = computer;
+const todaysNet = (transactions: TransactionObj): number => {
+  let total = 0;
+  for(const transaction in transactions) {
+    total += transactions[transaction]; // working fine bcz of line-4
   }
 
-  public getLang() {
-    return `i write in ${this.lang} too`; // we can access the protected lang here bcz WebDev is subclass of Coder2
-  }
+  return total;
 }
-const obj = new WebDev('Mac', 'Harsh', 25, 'Lofi');
-console.log(obj.getLang());
-console.log(obj.age);
-console.log(obj.lang);
+console.log(todaysNet(todaysTransactions));
+
+// Note: Since we have made above interface as readonly, 
+//  we cnt assign values. To assign values, jst remove 'readonly'.
+// todaysTransactions['Pizza'] = 30
+
+// console.log(todaysTransactions['harsh']); // gives undefined, as this property dsnt exist.
+
+/////////////////////////////////////////////////////////
+
+interface Student {
+  [key: string]: string | number | number[] | undefined
+  name: string,
+  GPA: number,
+  classes?: number[]
+}
+const student: Student = {
+  name: "Harsh",
+  GPA: 9.8,
+  classes: [100, 200]
+}
+console.log(student.age); // it doesnt exist in student obj but still ts has no problem bcz of idx signature we hv done in line-41
+
+//
+for (const key in student) {
+  console.log(`${key}: ${student[key]}`); // working fine bcz of line-41
+
+  // alternative, if we remove line-41 then:
+  // console.log(`${key}: ${student[key as keyof Student]}`);
+}
+
+//
+const logStudentKey = (student: Student, key: keyof Student): void => {
+  console.log(`Student ${key}: ${student[key]}`);
+}
 
 /////////////////////////////////////////////////////
 
-interface Musician {
-  name: string,
-  instrument: string,
-  play(action: string): string
+// interface Incomes {
+//   [key: string]: number
+// }
+
+type Streams = 'salary' | 'bonus' | 'sidehustle'
+type Incomes = Record<Streams, number>
+const monthlyIncomes: Incomes = {
+  salary: 500000000,
+  bonus: 100,
+  sidehustle: 250
 }
-class Guitarist implements Musician {
-  name: string;
-  instrument: string
-
-  constructor(name: string, instrument: string){
-    this.name = name;
-    this.instrument = instrument;
-  }
-
-  play(action: string) {
-    return `${this.name} ${action} the ${this.instrument}` ;
-  }
+for(const revenue in monthlyIncomes) {
+  console.log(monthlyIncomes[revenue]);
+  // Solution: keyof assertion
+  console.log(monthlyIncomes[revenue as keyof Incomes]);
 }
-const obj1 = new Guitarist('Harsh', 'guitar');
-console.log(obj1.play('strums'));
-
-///////////////////////////////////////////////////////
-
-class Peeps {
-  static count: number = 0;
-  static getCount(): number {
-    return Peeps.count;
-  }
-
-  public id: number;
-
-  constructor(public name: string) {
-    this.name = name;
-    this.id = ++Peeps.count;
-  }
-}
-const Harshh = new Peeps('Harsh');
-const Steve = new Peeps('Steve');
-const Amy = new Peeps('Amy');
-console.log(Peeps.count);
-
-///////////////////////////////////////
-class Bands {
-  private dataState: string[];
-
-  constructor() {
-    this.dataState = [];
-  }
-
-  public get data(): string[] {
-    return this.dataState;
-  } 
-
-  public set data(value: string[]) {
-    if(Array.isArray(value) && value.every(elem => typeof elem === 'string')){
-      this.dataState = value;
-      return;
-    } else
-        throw new Error('Param is not an array of strings');
-  }
-}
-const MyBands = new Bands();
-MyBands.data = ["dfg", 'fg', "Er"];
-console.log(MyBands.data);
